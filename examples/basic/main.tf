@@ -1,13 +1,8 @@
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-2"
 }
 
-locals {
-  user_data = <<EOF
-#!/bin/bash
-echo "Hello Terraform!"
-EOF
-}
+
 
 ##################################################################
 # Data sources to get VPC, subnet, security group and AMI details
@@ -29,7 +24,7 @@ data "aws_ami" "amazon_linux" {
     name = "name"
 
     values = [
-      "amzn-ami-hvm-*-x86_64-gp2",
+      "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
     ]
   }
 
@@ -55,26 +50,23 @@ module "security_group" {
   egress_rules        = ["all-all"]
 }
 
-resource "aws_eip" "this" {
-  vpc      = true
-  instance = module.ec2.id[0]
-}
+
 
 resource "aws_placement_group" "web" {
   name     = "hunky-dory-pg"
   strategy = "cluster"
 }
 
-resource "aws_kms_key" "this" {
-}
+#resource "aws_kms_key" "this" {
+#}
 
-resource "aws_network_interface" "this" {
+#resource "aws_network_interface" "this" {
   count = 1
 
   subnet_id = tolist(data.aws_subnet_ids.all.ids)[count.index]
-}
+#}
 
-module "ec2" {
+#module "ec2" {
   source = "../../"
 
   instance_count = 1
@@ -115,7 +107,7 @@ module "ec2" {
     "Env"      = "Private"
     "Location" = "Secret"
   }
-}
+#}
 
 module "ec2_with_t2_unlimited" {
   source = "../../"
@@ -132,7 +124,7 @@ module "ec2_with_t2_unlimited" {
   associate_public_ip_address = true
 }
 
-module "ec2_with_t3_unlimited" {
+#module "ec2_with_t3_unlimited" {
   source = "../../"
 
   instance_count = 1
@@ -144,9 +136,9 @@ module "ec2_with_t3_unlimited" {
   subnet_id                   = tolist(data.aws_subnet_ids.all.ids)[0]
   vpc_security_group_ids      = [module.security_group.security_group_id]
   associate_public_ip_address = true
-}
+#}
 
-module "ec2_with_metadata_options" {
+#module "ec2_with_metadata_options" {
   source = "../../"
 
   instance_count = 1
@@ -163,9 +155,9 @@ module "ec2_with_metadata_options" {
     http_tokens                 = "required"
     http_put_response_hop_limit = 8
   }
-}
+#}
 
-module "ec2_with_network_interface" {
+#module "ec2_with_network_interface" {
   source = "../../"
 
   instance_count = 1
@@ -182,10 +174,10 @@ module "ec2_with_network_interface" {
       delete_on_termination = false
     }
   ]
-}
+#}
 
 # This instance won't be created
-module "ec2_zero" {
+#module "ec2_zero" {
   source = "../../"
 
   instance_count = 0
@@ -195,4 +187,4 @@ module "ec2_zero" {
   instance_type          = "c5.large"
   subnet_id              = tolist(data.aws_subnet_ids.all.ids)[0]
   vpc_security_group_ids = [module.security_group.security_group_id]
-}
+#}
