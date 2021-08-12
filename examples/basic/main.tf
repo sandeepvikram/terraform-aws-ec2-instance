@@ -54,7 +54,7 @@ module "ec2" {
   instance_count = var.instances_number
 
   name                        = "example-with-ebs"
-  ami                         = data.aws_ami.amazon_linux.id
+  ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = tolist(data.aws_subnet_ids.all.ids)[0]
   vpc_security_group_ids      = [module.security_group.security_group_id]
