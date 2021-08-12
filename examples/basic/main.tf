@@ -16,7 +16,7 @@ data "aws_subnet_ids" "all" {
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
-  owners = ["self"]
+  owners = ["amazon"]
 
   filter {
     name = "name"
@@ -30,7 +30,7 @@ data "aws_ami" "amazon_linux" {
     name = "owner-alias"
 
     values = [
-      "self",
+      "amazon",
     ]
   }
 }
