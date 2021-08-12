@@ -13,7 +13,7 @@ data "aws_subnet_ids" "all" {
   vpc_id = data.aws_vpc.default.id
 }
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "amazon_linux" {
   most_recent = true
 
   owners = ["amazon"]
@@ -22,7 +22,7 @@ data "aws_ami" "ubuntu" {
     name = "name"
 
     values = [
-      "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*",
+      "amzn-ami-hvm-*-x86_64-gp2",
     ]
   }
 
@@ -54,7 +54,7 @@ module "ec2" {
   instance_count = var.instances_number
 
   name                        = "example-with-ebs"
-  ami                         = data.aws_ami.ubuntu.id
+  ami                         = data.aws_ami.amazon_linux.id
   instance_type               = "t2.micro"
   subnet_id                   = tolist(data.aws_subnet_ids.all.ids)[0]
   vpc_security_group_ids      = [module.security_group.security_group_id]
