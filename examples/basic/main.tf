@@ -25,6 +25,14 @@ data "aws_ami" "amazon_linux" {
       "amzn-ami-hvm-*-x86_64-gp2",
     ]
   }
+
+  filter {
+    name = "owner-alias"
+
+    values = [
+      "amazon",
+    ]
+  }
 }
 
 module "security_group" {
